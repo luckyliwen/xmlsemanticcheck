@@ -1,0 +1,35 @@
+{
+	"name": "xmlsemanticcheck",
+	"description": "",
+	"i18n" : "xmlsemanticcheck/i18n/i18n",
+
+	"requires": {
+		"services": [
+			"basevalidator",
+			"document",
+			"projectmetadata",
+			"librarymetadata"
+		]
+	},
+	"provides": {
+		"services" : {
+			"xmlSemanticCheck" :{
+				"implements": "sap.watt.common.service.editor.Validator",
+				"module" : "xmlsemanticcheck/service/XmlSemanticCheck"
+			}
+		}
+	},
+	"configures": {
+		"services": {
+			"basevalidator:validator" : [
+				{
+					"validatorName": "{i18n>label.validator.name}",
+					"fileExtension": ["xml"],
+					"syncExec": false,
+					"service": "@xmlSemanticCheck"
+				}
+			]
+		}
+	},
+	"subscribes": {}
+}

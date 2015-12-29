@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html><head>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <title>Simple tool to create zip file by JSZIP</title>
+<!-- src="http://veui5infra.dhcp.wdf.sap.corp:8080/sapui5/resources/sap-ui-core.js"
+ <uilib:FileChoose id="fileChoose" accept="text/xml"  multiple="true" change="onOpenFromFileChanged" 
+                loadOne="onOpenFromFileLoadOne" loadAll="onOpenFromFileLoadAll">
+                <uilib:buttonControl>
+                    <Button
+                        id="fileChooseButton"
+                        text="Choose Files"
+                        icon="sap-icon://attachment-text-file">
+                    </Button>
+                </uilib:buttonControl>
+            <uilib:FileChoose>
+ -->
+<script id="sap-ui-bootstrap" 
+       src="../resources/sap-ui-core.js"
+       data-sap-ui-theme="sap_bluecrystal"
+       data-sap-ui-xx-bindingSyntax="complex"
+       data-sap-ui-libs="sap.m,sap.ui.commons,sap.ui.table,sap.ui.comp"
+       >
+</script>
+
+<script src="./lib/jszip/jszip.js"> </script>
+<script src="./lib/jszip/jszip-load.js"> </script>
+<script src="./lib/FileSaver.js"> </script>
+<script src="./lib/FileChoose.js"> </script>
+
+<script id="myXmlContent" type="text/xmldata"> 
+    <core:View
+        controllerName="SimpleZip"
+        xmlns="sap.m"  xmlns:uilib="fd.uilib"
+        xmlns:core="sap.ui.core">
+
+    <VBox>
+        <items>
+            <core:HTML
+                content="&lt;h3>Simple tool to create zip file by JSZIP/h3">
+            </core:HTML>
+            <core:HTML
+                content="&lt;h1>Step 1:  Select files by click the browser file button&lt;/h1>">
+            </core:HTML>
+            
+            <uilib:FileChoose id="fileChoose"  multiple="true" change="onOpenFromFileChanged" 
+                 loadAll="onOpenFromFileLoadAll">
+                <uilib:button>
+                    <Button
+                        id="fileChooseButton"
+                        text="Choose Files"
+                        icon="sap-icon://attachment-text-file">
+                    </Button>
+                </uilib:button>
+            </uilib:FileChoose>
+
+            <core:HTML
+                content="&lt;h1>Step 2:  Provide zip file name and press 'Create ZIP File'&lt;/h1>">
+            </core:HTML>
+            <HBox>
+                <items>
+                    <Label
+                        text="ZIP File Name:">
+                    </Label>
+                    <Input
+                        id="zipFileName"
+                        width="200px">
+                    </Input>
+                    <Button
+                        text="Create ZIP file"
+                        icon="sap-icon://create"
+                        press="onCreateZipFilePressed">
+                    </Button>
+                </items>
+            </HBox>
+            <core:HTML
+                content="&lt;h2> Selected File names&lt;/h2>">
+            </core:HTML>
+            <TextArea
+                rows="5"
+                id="fileNames"
+                width="300px">
+            </TextArea>
+            <HBox>
+                <items>
+                    <core:HTML
+                        content="&lt;h2>Press Reset to start again&lt;/h2>">
+                    </core:HTML>
+                    <Button
+                        text="Reset"
+                        icon="sap-icon://restart"
+                        press="onResetPressed">
+                    </Button>
+                </items>
+            </HBox>
+        </items>
+    </VBox>
+    </core:View>
+</script>
+<script>
+sap.ui.controller("SimpleZip", {
+    onInit : function () {
+        // var btnOpen = this.byId('chooseFiles');
+        // this._oOpenFileChoose = new fd.uilib.FileChoose({
+        //     buttonControl : btnOpen,
+        //     accept :"text/xml",
+        //     multiple: true,
+        //     change: [this.onOpenFromFileChanged, this],
+        //     loadOne: [this.onOpenFromFileLoadOne, this],
+        //     loadAll: [this.onOpenFromFileLoadAll, this],
+        // });
+        this.onResetPressed();
+    },
+
+    onOpenFromFileChanged: function( evt ) {
+        evt.getSource().startRead();
+    },
+
+   /* onOpenFromFileLoadOne: function( evt) {
+        var name = evt.getParameter('name');
+        var content = evt.getParameter("content");
+        this.addFile(name,content);
+    },*/
+
+    onOpenFromFileLoadAll: function( evt ) {
+        var names = evt.getParameter('names');
+        var contents = evt.getParameter("contents");
+        for (var i=0; i < names.length; i++) {
+            this.addFile(names[i], contents[i]);
+        }
+    },
+    
+
+    onCreateZipFilePressed : function( oEvent )  {
+        var fn = this.byId("zipFileName").getValue().trim();
+        if (!fn) {
+            alert("Please input zip fle name");
+            return;
+        }
+        if (fn.indexOf(".zip") == -1){
+            fn = fn +".zip";
+        }
+
+        if (this.aFile.length==0) {
+            alert("At least select one file!");
+            return;
+        }
+
+        var zip = new JSZip();
+        for (var i=0; i < this.aFile.length; i++) {
+            var file  = this.aFile[i];
+            zip.file(file.name, file.content);
+        }
+        var zipContent = zip.generate({type:"blob"});
+
+        // see FileSaver.js
+        saveAs(zipContent, fn);
+    },
+
+    onResetPressed : function( oEvent )  {
+        this.aFile = [];  //like {name: xx, content: xx}
+        this.byId("fileNames").setValue("");
+    },
+
+    addFile: function( name, content) {
+        var value = this.byId("fileNames").getValue();
+        if (value)
+            value += "\r\n" + name;
+        else
+            value = name;
+        this.byId("fileNames").setValue(value);
+
+        this.aFile.push({
+            name: name,
+            content: content
+        });
+    },
+    
+
+});
+var viewContent = sap.ui.xmlview({ viewContent: jQuery("#myXmlContent").html() });
+    var myApp = new sap.m.App('myDemoApp');
+    myApp.addPage(viewContent);
+    myApp.placeAt("content");
+</script>
+
+</head>
+<body class='sapUiBody'>
+	<div id='content'></div>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html><head>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <title>Runable Code created by Fast Designer</title>
+
+<!-- src="../resources/sap-ui-core.js"
+ src="http://veui5infra.dhcp.wdf.sap.corp:8080/sapui5/resources/sap-ui-core.js"-->
+<script src="./lib/q/q.js"> </script>
+<script src="./lib/requirejs/require.js"> </script>
+<script src="./lib/jszip/jszip.js"> </script>
+<script src="./lib/jszip/jszip-load.js"> </script>
+<script src="./lib/lodash/lodash.js"> </script>
+
+<script id="sap-ui-bootstrap" 
+       src="http://veui5infra.dhcp.wdf.sap.corp:8080/sapui5/resources/sap-ui-core.js"
+       data-sap-ui-theme="sap_bluecrystal"
+       data-sap-ui-xx-bindingSyntax="complex"
+       data-sap-ui-resourceroots='{"xmlsemanticcheck": "./xmlsemanticcheck"}'
+       data-sap-ui-libs="sap.m,sap.ui.commons,sap.ui.table,sap.ui.comp"
+       >
+</script>
+
+
+
+<script id="myXmlContent" type="text/xmldata"> 
+    <core:View
+        controllerName="TestValidator"
+        xmlns="sap.m"
+        xmlns:core="sap.ui.core">
+
+    <VBox>
+        <items>
+            <TextArea
+                rows="5"
+                id="xmlContent"
+                placeholder="Directly input XML view content here to do check"
+                width="100%">
+            </TextArea>
+            <Toolbar>
+                <content>
+                    <ToolbarSpacer>
+                    </ToolbarSpacer>
+                    <Button
+                        text="Clear Content"
+                        press="onClearContentPressed">
+                    </Button>
+                    <Button
+                        text="Do Semantic Check"
+                        press="onSemanticCheckPressed">
+                    </Button>
+                    <ToolbarSpacer>
+                    </ToolbarSpacer>
+                </content>
+            </Toolbar>
+            <TextArea
+                rows="25"
+                id="checkResult"  placeholder="Result come here"
+                width="100%">
+            </TextArea>
+        </items>
+    </VBox>
+    </core:View>
+</script>
+<script>
+
+var gXmlSemanticCheck = null;
+
+require(["./xmlsemanticcheck/service/XmlSemanticCheck"],
+    function(XmlSemanticCheck) {
+        gXmlSemanticCheck = XmlSemanticCheck;
+    });
+
+sap.ui.controller("TestValidator", {
+    
+    onClearContentPressed : function( oEvent )  {
+        this.byId("xmlContent").setValue("");
+        this.byId("checkResult").setValue("");
+      
+    },
+
+    onSemanticCheckPressed : function( oEvent )  {
+        var xmlContent = this.byId("xmlContent").getValue();
+        var oPromise = gXmlSemanticCheck.getIssues(xmlContent);
+        var that = this;
+        oPromise.then(function( report ) {
+           if (report.issues.length ==0) {
+                alert("Congragulations, it is valid XML");
+           } else {
+               alert("There are " + report.issues.length + " semantic error, detail please see the result window");
+               var aMsg = [];
+               for (var i=0; i < report.issues.length; i++) {
+                   var issue = report.issues[i];
+                   aMsg.push( "line: " + issue.line + " , column: " + issue.column + " error: " + issue.message);
+               }
+               that.byId("checkResult").setValue( aMsg.join("\r\n"));
+            }
+        }).done();
+    }
+
+});
+var viewContent = sap.ui.xmlview({ viewContent: jQuery("#myXmlContent").html() });
+    var myApp = new sap.m.App('myDemoApp');
+    myApp.addPage(viewContent);
+    myApp.placeAt("content");
+</script>
+
+</head>
+<body class='sapUiBody'>
+    <div id='content'></div>
+</body>
+</html>
