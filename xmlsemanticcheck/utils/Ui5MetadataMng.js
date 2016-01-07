@@ -247,7 +247,7 @@ define(["./EnumValue", "./Utils"], function(EnumValue, Utils) {
                 return ret;    
             } else {
                 //try to get from parent, until reach to top most
-                if ( controlOrElementName == EnumValue.StrElement || controlOrElementName == EnumValue.StrControl) {
+                if ( controlOrElementName == EnumValue.StrManagedObject) {
                     //still can't find, no need check parent any more
                     return ret;
                 } else {

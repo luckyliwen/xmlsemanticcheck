@@ -208,6 +208,10 @@ return {
 				sName = attr.name;
 				sValue = attr.value;
 
+				//ignore the xmlns
+				if (isNsAttr(sName))
+					continue;
+
 				tree.addMetaData(sName, sValue);
 			}
 		}

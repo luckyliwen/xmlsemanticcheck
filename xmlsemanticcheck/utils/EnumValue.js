@@ -40,6 +40,7 @@ define([], function() {
 		StrCoreView:  "sap.ui.core.View",
 		StrFragment:  "sp.ui.core.Fragment",
 		StrFragmentDefinition :"sp.ui.core.FragmentDefinition",
-		StrExtPoint 	:"sp.ui.core.ExtensionPoint"
+		StrExtPoint 	:"sp.ui.core.ExtensionPoint",
+		StrManagedObject: "sap.ui.base.ManagedObject"
 }
 });
