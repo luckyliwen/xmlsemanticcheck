@@ -119,7 +119,6 @@ define([], function() {
 				//first remove the extra space if any
 				word = word.replace( /\s/g, "");
 				
-				//console.error('word is <' + word +">");
 				return '"' + word.substr(0, word.length-1) + '" : ';
 			});
 			
@@ -128,14 +127,11 @@ define([], function() {
 			
 			var o = null;
 			try {
-				//obj = JSON.parse(normal);
 				o = $.parseJSON(normal);
 			} catch (ex) {
-				fd.assert("Normal string error", "reason " + ex +" str is " + str );
-				//return null;
+				jQuery.sap.log.error("Normal string error", "reason " + ex +" str is " + str );
 			}
-			
-			//console.error("Obj is ", o);
+
 			return o;
 		},
 
@@ -216,7 +212,6 @@ define([], function() {
 				if ("parts" in obj) {
 					var arr = [];
 					var parts = obj.parts;
-					fd.assert( parts instanceof Array);
 					
 					for ( var i = 0; i < parts.length; i++) {
 						var entry = parts[i];
