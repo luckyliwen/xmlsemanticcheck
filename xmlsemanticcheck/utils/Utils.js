@@ -14,7 +14,7 @@ define([], function() {
 
    	return {
 		isValidId : function( id ) {
-		    var regexp = /^[\w\._]+$/;
+		    var regexp = /^([A-Za-z_][-A-Za-z0-9_.:]*)$/;
 		    return regexp.test(id);
 		},
 
