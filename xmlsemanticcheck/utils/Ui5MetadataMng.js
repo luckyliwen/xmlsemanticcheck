@@ -47,6 +47,17 @@ define(["./EnumValue", "./Utils"], function(EnumValue, Utils) {
         }
     };
 
+    var defaultCheckLib = [
+        "sap.m.json",
+        "sap.ui.core.json",
+        "sap.ui.commons.json",
+        "sap.ui.table.json",
+        "sap.ui.layout.json",
+        "sap.ui.comp.json",
+        "sap.uxap.json"
+    ];
+    
+
     return {
 
     	/**
@@ -66,7 +77,8 @@ define(["./EnumValue", "./Utils"], function(EnumValue, Utils) {
     	    //load data, unzip it
     	    //??like return that.context.service.librarymetadata.getMetadata("sapui5", "xml", "1.29"); 
     	    //??now just use the local demo data to simulate it, 
-   			var url = "./demo_data/1.29.1-metadata.zip";
+            var url = "./demo_data/1.35.0.zip";
+
     	    var oSimulateZipPromise = this._simulateLoadZipFile(url);
     	    var that = this;
     	    
@@ -175,6 +187,9 @@ define(["./EnumValue", "./Utils"], function(EnumValue, Utils) {
                     if (md) {
                         var extend = md.extend;
                         return this._isInstanceOf(mMetadata, extend, typeName);
+                    } else {
+                        //!! if can't get that,then by default just ignore it
+                        return true;
                     }
                 }
             }
@@ -333,6 +348,15 @@ define(["./EnumValue", "./Utils"], function(EnumValue, Utils) {
             return [];
         },
 
+        _isNeedCheckedLib : function( fileName ) {
+            for (var i=0; i < defaultCheckLib.length; i++) {
+                //as the file name may contain _ or not, so just juse indexOf to match 
+                if (fileName.indexOf(defaultCheckLib[i]) != -1) 
+                    return true;
+            }
+            return false;
+        },
+        
     	_onLoadZipSuccess: function( zipContent, libInfo ) {
     	    var jsZip = new JSZip();
 			jsZip.load(zipContent);
@@ -349,9 +373,9 @@ define(["./EnumValue", "./Utils"], function(EnumValue, Utils) {
 
 			var oDefer = Q.defer();
 			for (var fileName in jsZip.files) {
-				//??here need check from the libInfo to know which library need parse or not  _sap.m.json
-				//??now just parse the mobile library
-				if (fileName == "_sap.m.json" || fileName == "_sap.ui.core.json" || fileName == "_sap.ui.commons.json") {
+				//??here need check from the libInfo to know which library need parse or not  sap.m.json
+				//??now just parse the default mobile library
+                if (this._isNeedCheckedLib(fileName)) {
 					var content = jsZip.files[fileName].asText();
 					try {
 						var json = JSON.parse(content);
