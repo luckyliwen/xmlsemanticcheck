@@ -245,10 +245,12 @@ var XmlCtrlNode = sap.ui.commons.TreeNode.extend("sap.watt.saptoolsets.fiori.edi
 		var parent;
 		var aggrInfo;
 
-		//first need ensure can get the metadata for this control
-		var controlMeta = Ui5MetadataMng.getMetadataByName(mGlobal.metaData, this.getNodeName());
-		if (!controlMeta)
-			return;
+		//first need ensure can get the metadata for the ui5 control
+		if ( this.isUi5Node()) {
+			var controlMeta = Ui5MetadataMng.getMetadataByName(mGlobal.metaData, this.getNodeName());
+			if (!controlMeta)
+				return;
+		}
 
 	    if (this.isRootNode()) {
 	    	//now for root node no need check 

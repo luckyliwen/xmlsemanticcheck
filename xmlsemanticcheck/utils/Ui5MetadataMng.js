@@ -139,7 +139,17 @@ define(["./EnumValue", "./Utils"], function(EnumValue, Utils) {
          */
         isValidAggregationName: function( mMetadata, controlOrElementName, aggregationNodeName) {
             var md = this.getAggregationMetadata(mMetadata, controlOrElementName, aggregationNodeName);
-            return md !== null;
+            if (md == null) {
+                //if parent can't find the metadata, then no need check
+                var controlMeta = this.getMetadataByName(mMetadata, controlOrElementName);
+                if (!controlMeta)
+                    return true;
+                else 
+                    return false;
+                
+            } else {
+                return true;
+            }
         },
 
         /*
