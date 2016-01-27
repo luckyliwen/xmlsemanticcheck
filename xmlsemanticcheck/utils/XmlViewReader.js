@@ -142,8 +142,9 @@ return {
 					tnName = name;
 					tnType = EnumValue.NodeType.Html;
 					
-				} else if (isFirstLetterUpperCase(lastName) && Utils.startsWith(ns,"sap.")) {
+				} else if (isFirstLetterUpperCase(lastName)) {
 					//for ui5, then need add .
+					//now no good way to support the cusomer controls, so we just relay the first latter 
 					tnName = node.namespaceURI + "." + name;
 					tnType = EnumValue.NodeType.Ui5;
 				} else {

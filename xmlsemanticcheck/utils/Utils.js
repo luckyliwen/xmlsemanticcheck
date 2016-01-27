@@ -19,7 +19,7 @@ define([], function() {
 		},
 
 		isValidCssClass : function( cssClass ) {
-		    var regexp = /^(([a-zA-Z_]+)\s*)+$/;
+		    var regexp = /^([_a-zA-Z]+[_a-zA-Z0-9-]*\s*)+$/;
 		    return regexp.test(cssClass);
 		},
 
