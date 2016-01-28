@@ -212,6 +212,9 @@ var XmlCtrlNode = sap.ui.commons.TreeNode.extend("sap.watt.saptoolsets.fiori.edi
 					this.addMetaIssue(mGlobal, name, value, "XML_INVALID_CSS");
 				}
 				continue;
+			} else if (name == 'binding') {
+				//as the binding is special property, which not provided in the metadata, so just ingore it
+				continue;
 			}
 
 			var metaInfo = Ui5MetadataMng.getMetaTypeAndMetaData(mGlobal.metaData, this.getNodeName(), name);
