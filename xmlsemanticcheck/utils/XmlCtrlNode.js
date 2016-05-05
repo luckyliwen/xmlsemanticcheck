@@ -43,6 +43,10 @@ var XmlCtrlNode = sap.ui.commons.TreeNode.extend("sap.watt.saptoolsets.fiori.edi
 	isUi5Node: function() {
 		return this.getNodeType() == EnumValue.NodeType.Ui5;
 	},
+
+	isTemplateNode: function() {
+		return this.getNodeType() == EnumValue.NodeType.Template;
+	},
 	
 	isUi5FragmentNode: function(  ) {
 	    return this.isUi5Node() && this.getNodeName() === EnumValue.StrFragment;
@@ -185,6 +189,9 @@ var XmlCtrlNode = sap.ui.commons.TreeNode.extend("sap.watt.saptoolsets.fiori.edi
 	}
 
 	XmlCtrlNode.prototype.checkSemantic_Meta = function( mGlobal ) {
+		if ( this.isTemplateNode())
+			return;
+		
 		//first need ensure can get the metadata for this control
 		var controlMeta = Ui5MetadataMng.getMetadataByName(mGlobal.metaData, this.getNodeName());
 		if (!controlMeta)
@@ -247,6 +254,10 @@ var XmlCtrlNode = sap.ui.commons.TreeNode.extend("sap.watt.saptoolsets.fiori.edi
 		var parentMeta;
 		var parent;
 		var aggrInfo;
+
+		//now for template node just ignore it
+		if ( this.isTemplateNode())
+			return;
 
 		//first need ensure can get the metadata for the ui5 control
 		if ( this.isUi5Node()) {

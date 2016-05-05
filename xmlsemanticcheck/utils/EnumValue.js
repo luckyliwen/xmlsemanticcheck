@@ -23,6 +23,7 @@ define([], function() {
 				Html:"Html",  //the html control, such as h1
 				Ui5: "Ui5",   //the ui5 control, sap.m.Button
 				Aggr:"Aggr",   //the aggregation, such as"content" for a Page
+				Template: 'Template',  //the xml template, now can't support it
 				Unknown: "Unknown" 
 		},
 

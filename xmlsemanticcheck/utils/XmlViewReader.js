@@ -142,7 +142,11 @@ return {
 					tnName = name;
 					tnType = EnumValue.NodeType.Html;
 					
-				} else if (isFirstLetterUpperCase(lastName)) {
+				} else if (ns== "http://schemas.sap.com/sapui5/extension/sap.ui.core.template/1") {
+					tnName = name;
+					tnType = EnumValue.NodeType.Template;
+				} 
+				else if (isFirstLetterUpperCase(lastName)) {
 					//for ui5, then need add .
 					//now no good way to support the cusomer controls, so we just relay the first latter 
 					tnName = node.namespaceURI + "." + name;
@@ -186,6 +190,10 @@ return {
 		
 		
 		function parseAttributes(tree,node,forConvert) {
+			//for the template, just ignore all attribute
+			if (tree.isTemplateNode()) 
+				return;
+			
 			//for root or html just add
 			var rootOrHtml = tree.isRootOrHtmlNode();
 			
